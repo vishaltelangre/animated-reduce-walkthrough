@@ -1,0 +1,22 @@
+{
+  "name": "code-visualization",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack --env.NODE_ENV=production",
+    "watch": "webpack --watch --env.NODE_ENV=development",
+    "start": "webpack-dev-server --open --env.NODE_ENV=development"
+  },
+  "dependencies": {
+    "d3": "^5.16.0"
+  },
+  "devDependencies": {
+    "babel-preset-env": "^1.7.0",
+    "babel-loader": "7",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0",
+    "@babel/polyfill": "^7.10.4",
+    "babel-core": "^6.26.3"
+  }
+}

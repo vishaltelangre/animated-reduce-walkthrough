@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Animated "reduce" Walkthrough</title>
+    <style>
+      body {
+        margin-top: 20px;
+        width: 480px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        font-size: 25px;
+        font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+          "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+        text-align: center;
+        margin-bottom: 40px;
+        color: gray;
+      }
+
+      #root {
+        border: 2px dashed lightgray;
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="main.js"></script>
+    <h1>
+      Animated
+      <span style="text-shadow: 0 1px 0 #000;">"reduce"</span> Walkthrough
+    </h1>
+    <div id="root">
+      <svg width="480" height="250">
+        <g font-family="monospace" font-size="16px">
+          <g transform="translate(0, 20)">
+            <text>
+              const initValue =
+              <tspan class="initial" fill="teal">0</tspan>
+            </text>
+          </g>
+          <g transform="translate(0, 60)">
+            <text>
+              const values = [
+              <tspan class="item" fill="teal">3</tspan>
+              ,
+              <tspan class="item" fill="teal">5</tspan>
+              ,
+              <tspan class="item" fill="teal">1</tspan>
+              ,
+              <tspan class="item" fill="teal">4</tspan>
+              ,
+              <tspan class="item" fill="teal">2</tspan>
+              ]
+            </text>
+          </g>
+          <g transform="translate(0, 100)">
+            <text>
+              const total = values.reduce((
+              <tspan class="accArg1" fill="skyblue">acc</tspan>
+              ,
+              <tspan class="itemArg1" fill="skyblue">item</tspan>
+              ) => {
+            </text>
+          </g>
+          <g transform="translate(40, 160)">
+            <text>
+              <tspan>return</tspan>
+
+              <tspan class="accEq">
+                <tspan class="accArg2" fill="skyblue">acc</tspan>
+                +
+                <tspan class="itemArg2" fill="skyblue">item</tspan>
+              </tspan>
+              <tspan
+                class="calculatedAcc"
+                fill="tomato"
+                font-size="40"
+                font-weight="bold"
+                x="100"
+                style="visibility: hidden;"
+              ></tspan>
+            </text>
+          </g>
+          <g transform="translate(0, 220)">
+            <text>
+              }, initValue)
+            </text>
+          </g>
+        </g>
+      </svg>
+    </div>
+  </body>
+</html>
