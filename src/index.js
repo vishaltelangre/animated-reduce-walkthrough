@@ -55,18 +55,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  const stepToCurrentArrayItem = (items, node, itemIndex, stepNumber) => {
+  const stepToCurrentArrayItem = async (items, node, itemIndex, stepNumber) => {
     const elementXPos = (el) => el.node().getBoundingClientRect().left - 104;
     const currentItemXPos = elementXPos(node);
     const itemArg1XPos = elementXPos(itemArg1);
 
-    items
+    await items
       .transition()
       .attr("fill", "teal")
       .attr("font-weight", "normal")
       .end();
 
-    node
+    await node
       .call(activeStyle, node.text(), stepNumber * 1000)
       .select(function () {
         return this.parentNode.parentNode;
@@ -87,9 +87,34 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const stepToArg = (selection, newText, resetText, stepNumber) => {
-    selection
+    const elementXPos = (el) => el.node().getBoundingClientRect().left - 104;
+    const sourceXPos = elementXPos(selection);
+    const destXPos = elementXPos(selection === accArg1 ? accArg2 : itemArg2);
+
+    const node = selection
       .call(activeStyle, newText, stepNumber * 1000)
       .call(resetStyle, resetText, "skyblue", (stepNumber + 1) * 1000);
+
+    if (selection === accArg1 || selection === itemArg1) {
+
+      node
+        .select(function () {
+          return this.parentNode.parentNode;
+        })
+        .insert("text", ":first-child")
+        .attr("x", sourceXPos)
+        .text(newText)
+        .attr("fill", "tomato")
+        .attr("font-weight", "bold")
+        .style("visibility", "hidden")
+        .transition()
+        .style("visibility", "visible")
+        .delay(stepNumber * 1000)
+        .duration(1000)
+        .attr("x", destXPos)
+        .attr("dy", 58)
+        .remove();
+    }
   };
 
   const stepToNewAccumulatedValue = (newAcc, stepNumber, isLastIteration) => {
