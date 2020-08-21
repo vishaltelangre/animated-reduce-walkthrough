@@ -60,27 +60,36 @@ document.addEventListener("DOMContentLoaded", () => {
     accEquation
       .transition()
       .delay(stepNumber * 1000)
-      .duration(2000)
+      .duration(isLastIteration ? 3000 : 2000)
       .style("visibility", "hidden")
       .transition()
       .style("visibility", "visible");
+
     calculatedAcc
       .transition()
       .delay(stepNumber * 1000)
-      .duration(2000)
+      .duration(1000)
       .style("visibility", "visible")
       .text(newAcc)
       .transition()
+      .attr("dx", isLastIteration ? 0 : 166)
+      .attr("dy", isLastIteration ? 20 : -60)
+      .attr("font-size", isLastIteration ? 80 : 16)
+      .duration(isLastIteration ? 2000 : 1000)
+      .transition()
+      .attr("dx", 0)
+      .attr("dy", 0)
+      .attr("font-size", 40)
       .style("visibility", "hidden");
 
     if (!isLastIteration) {
-      accArg1.call(activeStyle, newAcc, (stepNumber + 1) * 1000);
+      accArg1.call(activeStyle, newAcc, (stepNumber + 2) * 1000);
     }
   };
 
   const step = async () => {
     let accumulatedValue = parseInt(initialValue.text());
-    const iterationStepCount = 3;
+    const iterationStepCount = 4;
 
     items.each(async function (_, i) {
       const currentItem = select(this);
