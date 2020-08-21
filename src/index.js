@@ -51,36 +51,30 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const stepToArg = (selection, newText, resetText, stepNumber) => {
-    selection.call(activeStyle, newText, stepNumber * 1000);
-    selection.call(resetStyle, resetText, "skyblue", (stepNumber + 1) * 1000);
+    selection
+      .call(activeStyle, newText, stepNumber * 1000)
+      .call(resetStyle, resetText, "skyblue", (stepNumber + 1) * 1000);
   };
 
-  const stepToNewAccumulatedValue = (
-    accumulatedValue,
-    stepNumber,
-    isLastIteration
-  ) => {
+  const stepToNewAccumulatedValue = (newAcc, stepNumber, isLastIteration) => {
     accEquation
       .transition()
       .delay(stepNumber * 1000)
-      .style("visibility", "hidden");
-    calculatedAcc
+      .duration(2000)
+      .style("visibility", "hidden")
       .transition()
-      .delay(stepNumber * 1000)
-      .style("visibility", "visible")
-      .text(accumulatedValue);
-    calculatedAcc
-      .transition()
-      .delay((stepNumber + 1) * 1000)
-      .duration(1000)
-      .style("visibility", "hidden");
-    accEquation
-      .transition()
-      .delay((stepNumber + 1) * 1000)
       .style("visibility", "visible");
+    calculatedAcc
+      .transition()
+      .delay(stepNumber * 1000)
+      .duration(2000)
+      .style("visibility", "visible")
+      .text(newAcc)
+      .transition()
+      .style("visibility", "hidden");
 
     if (!isLastIteration) {
-      accArg1.call(activeStyle, accumulatedValue, (stepNumber + 2) * 1000);
+      accArg1.call(activeStyle, newAcc, (stepNumber + 1) * 1000);
     }
   };
 
