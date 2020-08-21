@@ -1,4 +1,4 @@
-import { select, selectAll } from "d3";
+import { select, selectAll, transition } from "d3";
 
 document.addEventListener("DOMContentLoaded", () => {
   const items = selectAll(".item");
@@ -20,8 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .duration(duration)
       .attr("fill", "tomato")
       .attr("font-weight", "bold")
-      .text(text)
-      .end();
+      .text(text);
   const resetStyle = (
     selection,
     text,
@@ -35,19 +34,56 @@ document.addEventListener("DOMContentLoaded", () => {
       .duration(duration)
       .attr("fill", fill)
       .attr("font-weight", "normal")
-      .text(text)
-      .end();
+      .text(text);
 
-  const stepToInitValue = (currentItemIndex) => {
-    initialValue.call(
-      currentItemIndex === 0 ? activeStyle : resetStyle,
-      initialValue.text()
-    );
+  const stepToInitValue = (isFirstIteration) => {
+    if (isFirstIteration) {
+      initialValue
+        .call(activeStyle, initialValue.text())
+        .clone(true)
+        .attr("fill", "tomato")
+        .attr("font-weight", "bold")
+        .attr("dx", -10)
+        .transition()
+        .delay(1000)
+        .duration(1000)
+        .attr("dx", 100)
+        .attr("dy", 78)
+        .remove();
+    } else {
+      initialValue.call(resetStyle, initialValue.text());
+    }
   };
 
-  const stepToCurrentArrayItem = (items, node, stepNumber) => {
-    items.transition().attr("fill", "teal").attr("font-weight", "normal").end();
-    node.call(activeStyle, node.text(), stepNumber * 1000);
+  const stepToCurrentArrayItem = (items, node, itemIndex, stepNumber) => {
+    const elementXPos = (el) => el.node().getBoundingClientRect().left - 104;
+    const currentItemXPos = elementXPos(node);
+    const itemArg1XPos = elementXPos(itemArg1);
+
+    items
+      .transition()
+      .attr("fill", "teal")
+      .attr("font-weight", "normal")
+      .end();
+
+    node
+      .call(activeStyle, node.text(), stepNumber * 1000)
+      .select(function () {
+        return this.parentNode.parentNode;
+      })
+      .insert("text", ":first-child")
+      .attr("x", currentItemXPos)
+      .text(node.text())
+      .attr("fill", "tomato")
+      .attr("font-weight", "bold")
+      .style("visibility", "hidden")
+      .transition()
+      .style("visibility", "visible")
+      .delay(stepNumber * 1000)
+      .duration(1000)
+      .attr("x", itemArg1XPos)
+      .attr("dy", 38)
+      .remove();
   };
 
   const stepToArg = (selection, newText, resetText, stepNumber) => {
@@ -93,12 +129,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     items.each(async function (_, i) {
       const currentItem = select(this);
+      const isFirstIteration = i === 0;
       const isLastIteration = i === items.size() - 1;
 
       await sleep(i * iterationStepCount * 2);
 
-      stepToInitValue(i);
-      stepToCurrentArrayItem(items, currentItem, 1);
+      stepToInitValue(isFirstIteration);
+      stepToCurrentArrayItem(items, currentItem, i, 1);
       stepToArg(accArg1, accumulatedValue, "acc", 2);
       stepToArg(itemArg1, currentItem.text(), "item", 2);
       stepToArg(accArg2, accumulatedValue, "acc", 3);
