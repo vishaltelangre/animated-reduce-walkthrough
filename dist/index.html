@@ -8,10 +8,10 @@
     />
     <style>
       body {
-        margin-top: 20px;
         width: 480px;
         margin: 0 auto;
         background-color: #e2e2e2;
+        font-size: 16px;
       }
 
       h1 {
@@ -19,7 +19,7 @@
         font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
           "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
         text-align: center;
-        margin-bottom: 40px;
+        margin: 40px 0;
         color: darkgray;
         text-shadow: 0 1px 0 #fff;
       }
@@ -28,141 +28,71 @@
         border: 2px dashed lightgray;
         padding: 10px;
         background-color: #fff;
-        box-shadow: 15px 15px 0px 0px #ccc;
+        box-shadow: 15px 15px 8px 0px #ccc;
+      }
+
+      .jsLogo {
+        display: inline-block;
+        background-color: rgba(255, 255, 0, 0.4);
+        padding: 0px 2px 2px 10px;
+        vertical-align: bottom;
+      }
+      .jsLogo > span {
+        vertical-align: bottom;
+        font-size: 16px;
+        color: slategray;
       }
 
       .sourceLink {
         display: block;
-        margin-top: 20px;
+        margin: 20px 0;
         font-size: 12px;
         font-family: monospace;
         color: darkgray;
         text-align: center;
         text-decoration: none;
+        text-shadow: 0 1px 0 #fff;
       }
       .sourceLink:hover {
         color: gray;
         text-decoration: underline;
       }
+      .canvas {
+        white-space: pre;
+        font-family: monospace;
+      }
 
-      @media (max-width: 500px) {
-        body {
-          width: 98%;
-        }
-
-        svg {
-          width: 98%;
-        }
+      @media (max-width: 480px) {
+        body, canvas { width: 98% }
+        .canvas { font-size: 14px; }
       }
     </style>
   </head>
   <body>
     <script src="main.js"></script>
-    <h1>How <span style="color: slategray;">reduce</span> works?</h1>
+    <h1>
+      how <span style="color: slategray;">reduce</span> in <span class="jsLogo"><span>JS</span></span> works?
+    </h1>
     <div id="root">
-      <svg width="480" height="250" viewBox="0 0 480 250">
-        <g font-family="monospace" font-weight="100" font-size="16px">
-          <g transform="translate(0, 20)">
-            <text>
-              const initValue =
-              <tspan class="initial" fill="teal">0</tspan>
-            </text>
-          </g>
-          <g transform="translate(0, 60)">
-            <text>
-              <tspan>const values = [</tspan>
-              <tspan class="item" fill="teal">3</tspan>
-              <tspan>,</tspan>
-              <tspan class="item" fill="teal">5</tspan>
-              <tspan>,</tspan>
-              <tspan class="item" fill="teal">1</tspan>
-              <tspan>,</tspan>
-              <tspan class="item" fill="teal">4</tspan>
-              <tspan>,</tspan>
-              <tspan class="item" fill="teal">2</tspan>
-              <tspan>]</tspan>
-            </text>
-          </g>
-          <g transform="translate(0, 100)">
-            <text>
-              <tspan>const total = values.reduce((</tspan>
-              <!-- Fixed width TSPAN hack - https://stackoverflow.com/a/42003489/1052356 -->
-              <tspan
-                class="accArg1"
-                fill="skyblue"
-                text-anchor="right"
-                x="290"
-                baseline-shift="0%"
-                kerning="0"
-              >
-                acc
-              </tspan>
-              <tspan x="320" baseline-shift="0%">,</tspan>
-              <tspan
-                class="itemArg1"
-                fill="skyblue"
-                text-anchor="right"
-                x="340"
-                baseline-shift="0%"
-                kerning="0"
-              >
-                item
-              </tspan>
-              <tspan>) => {</tspan>
-            </text>
-          </g>
-          <g transform="translate(40, 160)">
-            <text>
-              <tspan>return</tspan>
-
-              <tspan class="accEq">
-                <tspan
-                  class="accArg2"
-                  fill="skyblue"
-                  text-anchor="end"
-                  x="110"
-                  baseline-shift="0%"
-                  kerning="0"
-                >
-                  acc
-                </tspan>
-                <tspan x="115" baseline-shift="0%">
-                  +
-                </tspan>
-                <tspan
-                  class="itemArg2"
-                  fill="skyblue"
-                  text-anchor="right"
-                  x="135"
-                  baseline-shift="0%"
-                  kerning="0"
-                >
-                  item
-                </tspan>
-              </tspan>
-              <tspan
-                class="calculatedAcc"
-                fill="tomato"
-                font-size="32"
-                font-weight="bold"
-                x="115"
-                style="visibility: hidden;"
-              ></tspan>
-            </text>
-          </g>
-          <g transform="translate(0, 220)">
-            <text>
-              }, initValue)
-            </text>
-          </g>
-        </g>
-      </svg>
+      <div class="canvas">
+<span class="line1"><span>const initValue = </span><span class="initial" style="color: teal">0</span></span>
+<span></span>
+<span class="line2"><span>const values = [ </span><span class="item" style="color: teal">3</span><span>,</span> <span class="item" style="color: teal">5</span><span>,</span> <span class="item" style="color: teal">1</span><span>,</span> <span class="item" style="color: teal">4</span><span>,</span> <span class="item" style="color: teal">2</span><span> ]</span></span>
+<span></span>
+<span class="line3"><span>const total = values.reduce((</span> <span class="accArg1" style="color: skyblue">acc</span><span>,</span> <span class="itemArg1" style="color: skyblue">item</span> <span>) => {</span></span>
+<span></span>
+<span></span>
+<span class="line4">    <span>return</span> <span class="accEq"><span class="accArg2" style="color: skyblue">acc</span> <span>+</span> <span class="itemArg2" style="color: skyblue">item</span></span><span class="calculatedAcc" style="color: tomato; font-size: 32px; font-weight: bold; visibility: hidden; position: absolute;"></span></span>
+<span></span>
+<span></span>
+<span class="line5"><span>}, initValue)</span></span>
+      </div>
     </div>
     <a
       class="sourceLink"
       href="https://github.com/vishaltelangre/animated-reduce-walkthrough"
     >
-      View source code on GitHub
+      view source code on github
     </a>
   </body>
 </html>

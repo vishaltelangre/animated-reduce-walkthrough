@@ -5,7 +5,7 @@
   "scripts": {
     "build": "webpack --env.NODE_ENV=production",
     "watch": "webpack --watch --env.NODE_ENV=development",
-    "start": "webpack-dev-server --open --env.NODE_ENV=development"
+    "start": "webpack-dev-server --host 0.0.0.0 --open --env.NODE_ENV=development"
   },
   "dependencies": {
     "d3": "^5.16.0"

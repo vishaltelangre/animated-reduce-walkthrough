@@ -18,8 +18,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       .transition()
       .delay(delay)
       .duration(duration)
-      .attr("fill", "tomato")
-      .attr("font-weight", "bold")
+      .style("color", "tomato")
+      .style("font-weight", "bold")
       .text(text);
   const resetStyle = (
     selection,
@@ -32,30 +32,30 @@ document.addEventListener("DOMContentLoaded", async () => {
       .transition()
       .delay(delay)
       .duration(duration)
-      .attr("fill", fill)
-      .attr("font-weight", "normal")
+      .style("color", fill)
+      .style("font-weight", "normal")
       .text(text);
 
-  const getElementPosition = (el) => {
-      const ownerSVGRect = el.node().ownerSVGElement.getBoundingClientRect();
-      const elRect = el.node().getBoundingClientRect();
-      return { x: elRect.x - ownerSVGRect.x, y: elRect.y - ownerSVGRect.y };
-    }
+  const getElementPosition = (el) => el.node().getBoundingClientRect();
 
   const stepToInitValue = (isFirstIteration) => {
     if (isFirstIteration) {
+      const selfPos = getElementPosition(initialValue);
+      const accArg1Pos = getElementPosition(accArg1);
+
       initialValue
         .call(activeStyle, initialValue.text())
         .clone(true)
+        .style("position", "absolute")
+        .style("left", `${selfPos.x}px`)
         .style("opacity", 1)
-        .attr("fill", "tomato")
-        .attr("font-weight", "bold")
-        .attr("dx", -10)
+        .style("color", "tomato")
+        .style("font-weight", "bold")
         .transition()
         .delay(2000)
+        .style("left", `${accArg1Pos.left}px`)
+        .style("top", `${accArg1Pos.top}px`)
         .duration(2000)
-        .attr("dx", 100)
-        .attr("dy", 78)
         .style("opacity", 0.1)
         .remove();
     } else {
@@ -63,29 +63,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   };
 
-  const resetArrayItemsStyle = () => items
+  const resetArrayItemsStyle = () =>
+    items
       .transition()
-      .attr("fill", "teal")
-      .attr("font-weight", "normal")
+      .style("color", "teal")
+      .style("font-weight", "normal")
       .end();
 
   const stepToCurrentArrayItem = (node, itemIndex, stepNumber) => {
-    const currentItemPos = getElementPosition(node);
+    const selfPos = getElementPosition(node);
     const itemArg1Pos = getElementPosition(itemArg1);
 
     resetArrayItemsStyle();
 
     node
       .call(activeStyle, node.text(), stepNumber * 2000)
-      .select(function () {
-        return this.parentNode.parentNode;
-      })
-      .insert("text", ":first-child")
-      .attr("dx", currentItemPos.x)
-      .attr("dy", 0)
+      .clone(true)
+      .style("position", "absolute")
+      .style("left", `${selfPos.left}px`)
       .text(node.text())
-      .attr("fill", "tomato")
-      .attr("font-weight", "bold")
+      .style("color", "tomato")
+      .style("font-weight", "bold")
       .style("visibility", "hidden")
       .style("opacity", 1)
       .transition()
@@ -93,47 +91,58 @@ document.addEventListener("DOMContentLoaded", async () => {
       .style("opacity", 0.1)
       .delay(stepNumber * 2000)
       .duration(2000)
-      .attr("dx", itemArg1Pos.x)
-      .attr("dy", itemArg1Pos.y - currentItemPos.y)
+      .style("left", `${itemArg1Pos.left}px`)
+      .style("top", `${itemArg1Pos.top}px`)
       .remove();
   };
 
-  const stepToArg = (selection, newText, resetText, stepNumber) => {
+  const stepToArg = (selection, newText, resetText, stepNumber, ctx = {}) => {
     const sourcePos = getElementPosition(selection);
-    const destPos = getElementPosition(selection === accArg1 ? accArg2 : itemArg2);
+    const destPos = getElementPosition(
+      selection === accArg1 ? accArg2 : itemArg2
+    );
 
     const node = selection
       .call(activeStyle, newText, stepNumber * 2000)
       .call(resetStyle, resetText, "skyblue", stepNumber * 3000);
 
     if (selection === accArg1 || selection === itemArg1) {
+      const itemArg1CloneLeftOffset =
+        (accArg1.text().length - `${ctx.accumulatedValue}`.length) *
+        items.nodes()[0].getBoundingClientRect().width;
+      const sourceCloneOffset =
+        selection === itemArg1 ? itemArg1CloneLeftOffset : 0;
+
       node
-        .select(function () {
-          return this.parentNode.parentNode;
-        })
-        .insert("text", ":first-child")
-        .attr("dx", sourcePos.x)
-        .attr("dy", 0)
+        .clone(true)
+        .style("position", "absolute")
+        .style("left", `${sourcePos.left - sourceCloneOffset}px`)
         .text(newText)
-        .attr("fill", "tomato")
-        .attr("font-weight", "bold")
+        .style("color", "tomato")
+        .style("font-weight", "bold")
         .style("visibility", "hidden")
         .style("opacity", 0)
         .transition()
         .delay(stepNumber * 1000)
-        .style("opacity", 0.5)
+        .style("opacity", 1)
         .transition()
         .delay(stepNumber * 1000)
         .duration(stepNumber * 1000)
         .style("opacity", 0.1)
         .style("visibility", "visible")
-        .attr("dx", destPos.x)
-        .attr("dy", destPos.y - sourcePos.y)
+        .style("left", `${destPos.left}px`)
+        .style("top", `${destPos.top}px`)
         .remove();
     }
   };
 
   const stepToNewAccumulatedValue = (newAcc, stepNumber, isLastIteration) => {
+    const accEquationPos = getElementPosition(accEquation);
+    const calculatedAccPos = getElementPosition(calculatedAcc);
+    const accArg1Pos = getElementPosition(accArg1);
+    const defaultFontSize = 16;
+    const maxFontSize = defaultFontSize * 5;
+
     accEquation
       .transition()
       .delay(stepNumber * 2000)
@@ -143,6 +152,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       .style("visibility", "visible");
 
     calculatedAcc
+      .style("left", `${accEquationPos.left + 8}px`)
+      .style("top", `${accEquationPos.top - 8}px`)
       .transition()
       .delay(stepNumber * 2000)
       .style("opacity", 0.7)
@@ -152,20 +163,32 @@ document.addEventListener("DOMContentLoaded", async () => {
       .text(newAcc)
       .transition()
       .duration(isLastIteration ? 3000 : 2000)
-      .attr("dx", isLastIteration ? 0 : 145)
-      .attr("dy", isLastIteration ? 20 : -60)
-      .attr("font-size", isLastIteration ? 80 : 16)
+      .style(
+        "left",
+        `${isLastIteration ? accEquationPos.left : accArg1Pos.left}px`
+      )
+      .style(
+        "top",
+        `${
+          isLastIteration
+            ? accEquationPos.top - maxFontSize / 2
+            : accArg1Pos.top
+        }px`
+      )
+      .style(
+        "font-size",
+        `${isLastIteration ? maxFontSize : defaultFontSize}px`
+      )
       .style("opacity", isLastIteration ? 1 : 0.1)
       .transition()
-      .attr("dx", 0)
-      .attr("dy", 0)
-      .attr("font-size", 32)
+      .style("font-size", `${defaultFontSize * 2}px`)
+      .style("left", `${accEquationPos.left + 8}px`)
+      .style("top", `${accEquationPos.top - 8}px`)
       .style("visibility", "hidden");
 
     if (isLastIteration) {
       resetArrayItemsStyle();
-    }
-    else {
+    } else {
       accArg1.call(activeStyle, newAcc, (stepNumber + 2) * 2000);
     }
   };
@@ -184,9 +207,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       stepToInitValue(isFirstIteration);
       stepToCurrentArrayItem(currentItem, i, 1);
       stepToArg(accArg1, accumulatedValue, "acc", 2);
-      stepToArg(itemArg1, currentItem.text(), "item", 2);
+      stepToArg(itemArg1, currentItem.text(), "item", 2, { accumulatedValue });
       stepToArg(accArg2, accumulatedValue, "acc", 3);
-      stepToArg(itemArg2, currentItem.text(), "item", 3);
+      stepToArg(itemArg2, currentItem.text(), "item", 3, { accumulatedValue });
 
       accumulatedValue = accumulatedValue + parseInt(currentItem.text());
 
