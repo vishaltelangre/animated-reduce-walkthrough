@@ -1,6 +1,6 @@
 import { select, selectAll, transition } from "d3";
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const items = selectAll(".item");
   const initialValue = select(".initial");
   const itemArg1 = select(".itemArg1");
@@ -36,6 +36,12 @@ document.addEventListener("DOMContentLoaded", () => {
       .attr("font-weight", "normal")
       .text(text);
 
+  const getElementPosition = (el) => {
+      const ownerSVGRect = el.node().ownerSVGElement.getBoundingClientRect();
+      const elRect = el.node().getBoundingClientRect();
+      return { x: elRect.x - ownerSVGRect.x, y: elRect.y - ownerSVGRect.y };
+    }
+
   const stepToInitValue = (isFirstIteration) => {
     if (isFirstIteration) {
       initialValue
@@ -57,24 +63,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  const stepToCurrentArrayItem = async (items, node, itemIndex, stepNumber) => {
-    const elementXPos = (el) => el.node().getBoundingClientRect().left - 104;
-    const currentItemXPos = elementXPos(node);
-    const itemArg1XPos = elementXPos(itemArg1);
-
-    await items
+  const resetArrayItemsStyle = () => items
       .transition()
       .attr("fill", "teal")
       .attr("font-weight", "normal")
       .end();
 
-    await node
+  const stepToCurrentArrayItem = (node, itemIndex, stepNumber) => {
+    const currentItemPos = getElementPosition(node);
+    const itemArg1Pos = getElementPosition(itemArg1);
+
+    resetArrayItemsStyle();
+
+    node
       .call(activeStyle, node.text(), stepNumber * 2000)
       .select(function () {
         return this.parentNode.parentNode;
       })
       .insert("text", ":first-child")
-      .attr("x", currentItemXPos)
+      .attr("dx", currentItemPos.x)
+      .attr("dy", 0)
       .text(node.text())
       .attr("fill", "tomato")
       .attr("font-weight", "bold")
@@ -85,19 +93,14 @@ document.addEventListener("DOMContentLoaded", () => {
       .style("opacity", 0.1)
       .delay(stepNumber * 2000)
       .duration(2000)
-      .attr("x", itemArg1XPos)
-      .attr("dy", 38)
+      .attr("dx", itemArg1Pos.x)
+      .attr("dy", itemArg1Pos.y - currentItemPos.y)
       .remove();
   };
 
   const stepToArg = (selection, newText, resetText, stepNumber) => {
-    const elementXPos = (el, offset = 104) =>
-      el.node().getBoundingClientRect().x - offset;
-    const sourceXPos = elementXPos(
-      selection,
-      selection === accArg1 ? 104 : 124
-    );
-    const destXPos = elementXPos(selection === accArg1 ? accArg2 : itemArg2);
+    const sourcePos = getElementPosition(selection);
+    const destPos = getElementPosition(selection === accArg1 ? accArg2 : itemArg2);
 
     const node = selection
       .call(activeStyle, newText, stepNumber * 2000)
@@ -109,7 +112,8 @@ document.addEventListener("DOMContentLoaded", () => {
           return this.parentNode.parentNode;
         })
         .insert("text", ":first-child")
-        .attr("x", sourceXPos)
+        .attr("dx", sourcePos.x)
+        .attr("dy", 0)
         .text(newText)
         .attr("fill", "tomato")
         .attr("font-weight", "bold")
@@ -123,8 +127,8 @@ document.addEventListener("DOMContentLoaded", () => {
         .duration(stepNumber * 1000)
         .style("opacity", 0.1)
         .style("visibility", "visible")
-        .attr("x", destXPos)
-        .attr("dy", 58)
+        .attr("dx", destPos.x)
+        .attr("dy", destPos.y - sourcePos.y)
         .remove();
     }
   };
@@ -141,24 +145,27 @@ document.addEventListener("DOMContentLoaded", () => {
     calculatedAcc
       .transition()
       .delay(stepNumber * 2000)
-      .style("opacity", 0.5)
+      .style("opacity", 0.7)
       .duration(isLastIteration ? 1000 : 2000)
       .style("opacity", 1)
       .style("visibility", "visible")
       .text(newAcc)
       .transition()
       .duration(isLastIteration ? 3000 : 2000)
-      .attr("dx", isLastIteration ? 0 : 166)
+      .attr("dx", isLastIteration ? 0 : 145)
       .attr("dy", isLastIteration ? 20 : -60)
       .attr("font-size", isLastIteration ? 80 : 16)
       .style("opacity", isLastIteration ? 1 : 0.1)
       .transition()
       .attr("dx", 0)
       .attr("dy", 0)
-      .attr("font-size", 40)
+      .attr("font-size", 32)
       .style("visibility", "hidden");
 
-    if (!isLastIteration) {
+    if (isLastIteration) {
+      resetArrayItemsStyle();
+    }
+    else {
       accArg1.call(activeStyle, newAcc, (stepNumber + 2) * 2000);
     }
   };
@@ -175,7 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
       await sleep(i * iterationStepCount * 2);
 
       stepToInitValue(isFirstIteration);
-      stepToCurrentArrayItem(items, currentItem, i, 1);
+      stepToCurrentArrayItem(currentItem, i, 1);
       stepToArg(accArg1, accumulatedValue, "acc", 2);
       stepToArg(itemArg1, currentItem.text(), "item", 2);
       stepToArg(accArg2, accumulatedValue, "acc", 3);
@@ -186,7 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
       stepToNewAccumulatedValue(accumulatedValue, 4, isLastIteration);
 
       if (isLastIteration) {
-        await sleep(iterationStepCount * 4);
+        await sleep(iterationStepCount * 3);
         step();
       }
     });

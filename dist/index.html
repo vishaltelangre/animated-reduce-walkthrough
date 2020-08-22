@@ -128,9 +128,28 @@
           <g transform="translate(0, 100)">
             <text>
               <tspan>const total = values.reduce((</tspan>
-              <tspan class="accArg1" fill="skyblue">acc</tspan>
-              <tspan>,</tspan>
-              <tspan class="itemArg1" fill="skyblue">item</tspan>
+              <!-- Fixed width TSPAN hack - https://stackoverflow.com/a/42003489/1052356 -->
+              <tspan
+                class="accArg1"
+                fill="skyblue"
+                text-anchor="right"
+                x="290"
+                baseline-shift="0%"
+                kerning="0"
+              >
+                acc
+              </tspan>
+              <tspan x="320" baseline-shift="0%">,</tspan>
+              <tspan
+                class="itemArg1"
+                fill="skyblue"
+                text-anchor="right"
+                x="340"
+                baseline-shift="0%"
+                kerning="0"
+              >
+                item
+              </tspan>
               <tspan>) => {</tspan>
             </text>
           </g>
@@ -139,16 +158,36 @@
               <tspan>return</tspan>
 
               <tspan class="accEq">
-                <tspan class="accArg2" fill="skyblue">acc</tspan>
-                <tspan>+</tspan>
-                <tspan class="itemArg2" fill="skyblue">item</tspan>
+                <tspan
+                  class="accArg2"
+                  fill="skyblue"
+                  text-anchor="end"
+                  x="110"
+                  baseline-shift="0%"
+                  kerning="0"
+                >
+                  acc
+                </tspan>
+                <tspan x="115" baseline-shift="0%">
+                  +
+                </tspan>
+                <tspan
+                  class="itemArg2"
+                  fill="skyblue"
+                  text-anchor="right"
+                  x="135"
+                  baseline-shift="0%"
+                  kerning="0"
+                >
+                  item
+                </tspan>
               </tspan>
               <tspan
                 class="calculatedAcc"
                 fill="tomato"
-                font-size="40"
+                font-size="32"
                 font-weight="bold"
-                x="80"
+                x="115"
                 style="visibility: hidden;"
               ></tspan>
             </text>
