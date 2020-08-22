@@ -1,5 +1,5 @@
 import { select, selectAll, transition } from "d3";
-import {timeout} from "d3-timer";
+import { timeout } from "d3-timer";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const items = selectAll(".item");
