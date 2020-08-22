@@ -1,4 +1,4 @@
-# Animated "reduce" Walkthrough
+# An animation to illustrate how "reduce" works in JavaScript
 
 ## Development
 
