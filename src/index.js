@@ -1,4 +1,5 @@
 import { select, selectAll, transition } from "d3";
+import {timeout} from "d3-timer";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const items = selectAll(".item");
@@ -11,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const calculatedAcc = select(".calculatedAcc");
 
   const sleep = (seconds) =>
-    new Promise((resolve) => setTimeout(resolve, seconds * 1000));
+    new Promise((resolve) => timeout(resolve, seconds * 1000));
 
   const activeStyle = (selection, text, delay = 1000, duration = 100) =>
     selection

@@ -8,15 +8,16 @@
     "start": "webpack-dev-server --host 0.0.0.0 --open --env.NODE_ENV=development"
   },
   "dependencies": {
-    "d3": "^5.16.0"
+    "d3": "^5.16.0",
+    "d3-timer": "^1.0.10"
   },
   "devDependencies": {
-    "babel-preset-env": "^1.7.0",
+    "@babel/polyfill": "^7.10.4",
+    "babel-core": "^6.26.3",
     "babel-loader": "7",
+    "babel-preset-env": "^1.7.0",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.0",
-    "@babel/polyfill": "^7.10.4",
-    "babel-core": "^6.26.3"
+    "webpack-dev-server": "^3.11.0"
   }
 }
