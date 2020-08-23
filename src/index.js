@@ -50,7 +50,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         .clone(true)
         .style("position", "absolute")
         .style("left", `${selfPos.x}px`)
-        .style("opacity", 1)
         .style("color", "tomato")
         .style("font-weight", "bold")
         .transition()
@@ -109,8 +108,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const isInnerArg = selection === accArg2 || selection === itemArg2;
 
     const node = selection
-      .call(activeStyle, newText, stepNumber * 1950, 100)
-      .call(resetStyle, resetText, "skyblue", stepNumber * (isInnerArg ? 3000 : 2500), 0);
+      .call(activeStyle, newText, stepNumber * 2000, 100)
+      .call(
+        resetStyle,
+        resetText,
+        "skyblue",
+        stepNumber * (isInnerArg ? 3000 : 2500),
+        0
+      );
 
     if (!isInnerArg) {
       node
@@ -150,9 +155,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     calculatedAcc
       .style("opacity", 0.75)
+      .style("font-size", `${defaultFontSize}px`)
       .style("width", `${accEquationPos.width}px`)
-      .style("left", `${accEquationPos.left + defaultFontSize}px`)
-      .style("top", `${accEquationPos.top - defaultFontSize}px`)
+      .style("left", `${accEquationPos.left}px`)
+      .style("top", `${accEquationPos.top}px`)
       .transition()
       .delay(stepNumber * 2000)
       .duration(isLastIteration ? 1000 : 2000)
@@ -167,29 +173,29 @@ document.addEventListener("DOMContentLoaded", async () => {
       )
       .style(
         "top",
-        `${isLastIteration ? accEquationPos.top - 16 : accArg1Pos.top}px`
+        `${
+          isLastIteration
+            ? accEquationPos.top - (defaultFontSize / 2)
+            : accArg1Pos.top
+        }px`
+      )
+      .style(
+        "width",
+        `${isLastIteration ? accEquationPos.width : accArg1Pos.width}px`
       )
       .style(
         "font-size",
-        `${isLastIteration ? defaultFontSize * 3 : defaultFontSize}px`
+        `${isLastIteration ? defaultFontSize * 2 : defaultFontSize}px`
       )
-      .style("width", `${accArg1Pos.width}px`)
       .transition()
-      .style("font-size", `${defaultFontSize * 2}px`)
-      .style(
-        "left",
-        `${isLastIteration ? calculatedAccPos.left : accEquationPos.left + defaultFontSize}px`
-      )
-      .style(
-        "top",
-        `${isLastIteration ? calculatedAccPos.top : accEquationPos.top - defaultFontSize}px`
-      )
+      .style("font-size", `${defaultFontSize}px`)
+      .style("left", `${accEquationPos.left}px`)
+      .style("top", `${accEquationPos.top}px`)
+      .style("width", `${accEquationPos.width}px`)
       .style("visibility", "hidden");
 
     if (isLastIteration) {
       resetArrayItemsStyle();
-    } else {
-      accArg1.call(activeStyle, newAcc, (stepNumber + 2) * 2000);
     }
   };
 
