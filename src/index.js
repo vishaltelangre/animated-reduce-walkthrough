@@ -35,7 +35,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       .duration(duration)
       .style("color", fill)
       .style("font-weight", "normal")
-      .text(text);
+      .text(text)
+      .transition();
 
   const getElementPosition = (el) => el.node().getBoundingClientRect();
 
@@ -55,9 +56,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         .transition()
         .delay(2000)
         .style("left", `${accArg1Pos.left}px`)
+        .style("width", `${accArg1Pos.width}px`)
+        .style("text-align", "center")
         .style("top", `${accArg1Pos.top}px`)
-        .duration(2000)
-        .style("opacity", 0.1)
+        .duration(2100)
         .remove();
     } else {
       initialValue.call(resetStyle, initialValue.text());
@@ -67,6 +69,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const resetArrayItemsStyle = () =>
     items
       .transition()
+      .delay(2000)
+      .duration(1000)
       .style("color", "teal")
       .style("font-weight", "normal")
       .end();
@@ -86,50 +90,42 @@ document.addEventListener("DOMContentLoaded", async () => {
       .style("color", "tomato")
       .style("font-weight", "bold")
       .style("visibility", "hidden")
-      .style("opacity", 1)
       .transition()
       .style("visibility", "visible")
-      .style("opacity", 0.1)
       .delay(stepNumber * 2000)
       .duration(2000)
       .style("left", `${itemArg1Pos.left}px`)
       .style("top", `${itemArg1Pos.top}px`)
+      .style("width", `${itemArg1Pos.width}px`)
+      .style("text-align", "center")
       .remove();
   };
 
-  const stepToArg = (selection, newText, resetText, stepNumber, ctx = {}) => {
+  const stepToArg = (selection, newText, resetText, stepNumber) => {
     const sourcePos = getElementPosition(selection);
     const destPos = getElementPosition(
       selection === accArg1 ? accArg2 : itemArg2
     );
+    const isInnerArg = selection === accArg2 || selection === itemArg2;
 
     const node = selection
-      .call(activeStyle, newText, stepNumber * 2000)
-      .call(resetStyle, resetText, "skyblue", stepNumber * 3000);
+      .call(activeStyle, newText, stepNumber * 1950, 100)
+      .call(resetStyle, resetText, "skyblue", stepNumber * (isInnerArg ? 3000 : 2500), 0);
 
-    if (selection === accArg1 || selection === itemArg1) {
-      const itemArg1CloneLeftOffset =
-        (accArg1.text().length - `${ctx.accumulatedValue}`.length) *
-        items.nodes()[0].getBoundingClientRect().width;
-      const sourceCloneOffset =
-        selection === itemArg1 ? itemArg1CloneLeftOffset : 0;
-
+    if (!isInnerArg) {
       node
         .clone(true)
         .style("position", "absolute")
-        .style("left", `${sourcePos.left - sourceCloneOffset}px`)
+        .style("left", `${sourcePos.left}px`)
         .text(newText)
         .style("color", "tomato")
         .style("font-weight", "bold")
         .style("visibility", "hidden")
-        .style("opacity", 0)
         .transition()
         .delay(stepNumber * 1000)
-        .style("opacity", 1)
         .transition()
         .delay(stepNumber * 1000)
         .duration(stepNumber * 1000)
-        .style("opacity", 0.1)
         .style("visibility", "visible")
         .style("left", `${destPos.left}px`)
         .style("top", `${destPos.top}px`)
@@ -141,8 +137,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const accEquationPos = getElementPosition(accEquation);
     const calculatedAccPos = getElementPosition(calculatedAcc);
     const accArg1Pos = getElementPosition(accArg1);
-    const defaultFontSize = 16;
-    const maxFontSize = defaultFontSize * 5;
+    const defaultFontSize =
+      parseInt(window.getComputedStyle(accEquation.node()).fontSize) || 16;
 
     accEquation
       .transition()
@@ -153,11 +149,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       .style("visibility", "visible");
 
     calculatedAcc
-      .style("left", `${accEquationPos.left + 8}px`)
-      .style("top", `${accEquationPos.top - 8}px`)
+      .style("opacity", 0.75)
+      .style("width", `${accEquationPos.width}px`)
+      .style("left", `${accEquationPos.left + defaultFontSize}px`)
+      .style("top", `${accEquationPos.top - defaultFontSize}px`)
       .transition()
       .delay(stepNumber * 2000)
-      .style("opacity", 0.7)
       .duration(isLastIteration ? 1000 : 2000)
       .style("opacity", 1)
       .style("visibility", "visible")
@@ -170,21 +167,23 @@ document.addEventListener("DOMContentLoaded", async () => {
       )
       .style(
         "top",
-        `${
-          isLastIteration
-            ? accEquationPos.top - maxFontSize / 2
-            : accArg1Pos.top
-        }px`
+        `${isLastIteration ? accEquationPos.top - 16 : accArg1Pos.top}px`
       )
       .style(
         "font-size",
-        `${isLastIteration ? maxFontSize : defaultFontSize}px`
+        `${isLastIteration ? defaultFontSize * 3 : defaultFontSize}px`
       )
-      .style("opacity", isLastIteration ? 1 : 0.1)
+      .style("width", `${accArg1Pos.width}px`)
       .transition()
       .style("font-size", `${defaultFontSize * 2}px`)
-      .style("left", `${accEquationPos.left + 8}px`)
-      .style("top", `${accEquationPos.top - 8}px`)
+      .style(
+        "left",
+        `${isLastIteration ? calculatedAccPos.left : accEquationPos.left + defaultFontSize}px`
+      )
+      .style(
+        "top",
+        `${isLastIteration ? calculatedAccPos.top : accEquationPos.top - defaultFontSize}px`
+      )
       .style("visibility", "hidden");
 
     if (isLastIteration) {
@@ -194,7 +193,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   };
 
-  const step = async () => {
+  const loop = async () => {
     let accumulatedValue = parseInt(initialValue.text());
     const iterationStepCount = 4;
 
@@ -208,9 +207,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       stepToInitValue(isFirstIteration);
       stepToCurrentArrayItem(currentItem, i, 1);
       stepToArg(accArg1, accumulatedValue, "acc", 2);
-      stepToArg(itemArg1, currentItem.text(), "item", 2, { accumulatedValue });
+      stepToArg(itemArg1, currentItem.text(), "item", 2);
       stepToArg(accArg2, accumulatedValue, "acc", 3);
-      stepToArg(itemArg2, currentItem.text(), "item", 3, { accumulatedValue });
+      stepToArg(itemArg2, currentItem.text(), "item", 3);
 
       accumulatedValue = accumulatedValue + parseInt(currentItem.text());
 
@@ -218,10 +217,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (isLastIteration) {
         await sleep(iterationStepCount * 3);
-        step();
+        loop();
       }
     });
   };
 
-  step();
+  loop();
 });

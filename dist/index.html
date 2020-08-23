@@ -61,10 +61,20 @@
         white-space: pre;
         font-family: monospace;
       }
+      .arg {
+        display: inline-block;
+        width: 36px;
+        text-align: center;
+      }
+      .calculatedAcc {
+        text-align: center;
+      }
 
       @media (max-width: 480px) {
-        body, canvas { width: 98% }
+        body { font-size: 15px; }
+        body, canvas { width: 98%; }
         .canvas { font-size: 14px; }
+        .arg { width: 32px; }
       }
     </style>
   </head>
@@ -79,10 +89,10 @@
 <span></span>
 <span class="line2"><span>const values = [ </span><span class="item" style="color: teal">3</span><span>,</span> <span class="item" style="color: teal">5</span><span>,</span> <span class="item" style="color: teal">1</span><span>,</span> <span class="item" style="color: teal">4</span><span>,</span> <span class="item" style="color: teal">2</span><span> ]</span></span>
 <span></span>
-<span class="line3"><span>const total = values.reduce((</span> <span class="accArg1" style="color: skyblue">acc</span><span>,</span> <span class="itemArg1" style="color: skyblue">item</span> <span>) => {</span></span>
+<span class="line3"><span>const total = values.reduce((</span> <span class="arg accArg1" style="color: skyblue">acc</span><span>,</span> <span class="arg itemArg1" style="color: skyblue">item</span> <span>) => {</span></span>
 <span></span>
 <span></span>
-<span class="line4">    <span>return</span> <span class="accEq"><span class="accArg2" style="color: skyblue">acc</span> <span>+</span> <span class="itemArg2" style="color: skyblue">item</span></span><span class="calculatedAcc" style="color: tomato; font-size: 32px; font-weight: bold; visibility: hidden; position: absolute;"></span></span>
+<span class="line4">    <span>return</span> <span class="accEq"><span class="arg accArg2" style="color: skyblue">acc</span> <span>+</span> <span class="arg itemArg2" style="color: skyblue">item</span></span><span class="calculatedAcc" style="color: tomato; font-size: 32px; font-weight: bold; visibility: hidden; position: absolute;"></span></span>
 <span></span>
 <span></span>
 <span class="line5"><span>}, initValue)</span></span>
